@@ -1,0 +1,7 @@
+bot:
+  bobik:
+    owner: ${OWNER_LOGIN}
+    token: ${BOT_TOKEN}
+    username: BobaCactusBot
+  logging:
+    toAdmin: true
