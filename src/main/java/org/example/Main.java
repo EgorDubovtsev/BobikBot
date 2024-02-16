@@ -16,7 +16,6 @@ import java.util.List;
 @SpringBootApplication
 public class Main   {
 
-    List<Command> commandList;
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }

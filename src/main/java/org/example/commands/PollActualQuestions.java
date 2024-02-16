@@ -24,10 +24,14 @@ public class PollActualQuestions implements Command{
     private final ChatIdCache cache;
     private final String NAME = "/actualQuestions";
     private final String DESCRIPTION = "Помочь бобику решить насущные вопросы.";
-    @SneakyThrows
+//    @SneakyThrows
     @Override
     public SendMessage execute() {
-        return executeNextStage(0);
+        try {
+            return executeNextStage(0);
+        } catch (CommandExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

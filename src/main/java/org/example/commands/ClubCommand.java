@@ -28,10 +28,14 @@ public class ClubCommand implements Command {
     private static final List<String> ANSWERS = Arrays.asList(YES_ANSWER, NO_ANSWER);
     private final ChatIdCache cache;
 
-    @SneakyThrows
+//    @SneakyThrows
     @Override
     public SendMessage execute() {
-        return executeNextStage(0);
+        try {
+            return executeNextStage(0);
+        } catch (CommandExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

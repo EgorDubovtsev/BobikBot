@@ -16,12 +16,16 @@ public class GiveASecretCommand implements Command{
     private static final String DESCRIPTION ="Хотите в чем то признаться? Покаяться перед бобиком? Боб всегда выслушает...";
     private final ChatIdCache cache;
 
-    @SneakyThrows
+//    @SneakyThrows
     @Override
     public SendMessage execute() {
         cache.addCommandToCache(UserInfoHolder.getUsername().get(), this, 1);
 
-        return executeNextStage(1);
+        try {
+            return executeNextStage(1);
+        } catch (CommandExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
