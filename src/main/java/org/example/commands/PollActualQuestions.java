@@ -9,6 +9,7 @@ import org.example.cache.ChatIdCache;
 import org.example.cache.UserInfoHolder;
 import org.example.entity.Question;
 import org.example.exceptions.CommandExecutionException;
+import org.example.util.CommandsUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -17,21 +18,19 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Component
 @RequiredArgsConstructor
-public class PollActualQuestions implements Command{
+public class PollActualQuestions implements Command {
     private final List<Question> questions;
     private final ChatIdCache cache;
     private final String NAME = "/actualQuestions";
     private final String DESCRIPTION = "Помочь бобику решить насущные вопросы.";
-//    @SneakyThrows
+
+    @SneakyThrows
     @Override
     public SendMessage execute() {
-        try {
-            return executeNextStage(0);
-        } catch (CommandExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        return executeNextStage(0);
     }
 
     @Override
@@ -47,7 +46,7 @@ public class PollActualQuestions implements Command{
     @Override
     public SendMessage executeNextStage(Integer stageId) throws CommandExecutionException {
         String user = UserInfoHolder.getUsername().get();
-        if (stageId > questions.size() -1) {
+        if (stageId > questions.size() - 1) {
             return getFinishMessage(user);
         }
         Question question = questions.get(stageId);
@@ -56,11 +55,11 @@ public class PollActualQuestions implements Command{
         SendMessage sendMessage = new SendMessage();
         sendMessage.setReplyMarkup(new ReplyKeyboardMarkup(answerButtons));
         sendMessage.setText(question.getQuestion());
-        cache.addCommandToCache(user, this, stageId+ 1);
+        cache.addCommandToCache(user, this, stageId + 1);
         return sendMessage;
     }
 
-    private List<KeyboardRow> getRows(List<String> answers){
+    private List<KeyboardRow> getRows(List<String> answers) {
         List<KeyboardRow> keyboardRowList = new ArrayList<>();
         for (String answ : answers) {
             KeyboardRow keyboardRow = new KeyboardRow();
@@ -72,10 +71,10 @@ public class PollActualQuestions implements Command{
         return keyboardRowList;
     }
 
-    private SendMessage getFinishMessage(String user){
+    private SendMessage getFinishMessage(String user) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setText("Спасибо, все запомнил!");
-        sendMessage.setReplyMarkup(null);
+        sendMessage.setReplyMarkup(CommandsUtil.getDefaultRows());
         cache.userGotAnswer(user);
         return sendMessage;
     }

@@ -3,6 +3,7 @@ package org.example.commands;
 import lombok.AllArgsConstructor;
 import org.example.cache.UserInfoHolder;
 import org.example.service.SendMessageService;
+import org.example.util.CommandsUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
@@ -14,7 +15,10 @@ public class HelloCommand implements Command {
     @Override
     public SendMessage execute() {
         System.out.println("Thread "+ Thread.currentThread().getId() + " " + UserInfoHolder.getUsername().get());
-        return new SendMessage(UserInfoHolder.getChatId().get(), "Hello from Bob");
+        SendMessage sendMessage = new SendMessage(UserInfoHolder.getChatId().get(), "Hello from Bob");
+        sendMessage.setReplyMarkup(CommandsUtil.getDefaultRows());
+
+        return sendMessage;
     }
 
     @Override

@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import org.example.cache.ChatIdCache;
 import org.example.cache.UserInfoHolder;
 import org.example.exceptions.CommandExecutionException;
+import org.example.util.CommandsUtil;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -28,14 +29,10 @@ public class ClubCommand implements Command {
     private static final List<String> ANSWERS = Arrays.asList(YES_ANSWER, NO_ANSWER);
     private final ChatIdCache cache;
 
-//    @SneakyThrows
+    @SneakyThrows
     @Override
     public SendMessage execute() {
-        try {
-            return executeNextStage(0);
-        } catch (CommandExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        return executeNextStage(0);
     }
 
     @Override
@@ -50,13 +47,14 @@ public class ClubCommand implements Command {
 
     @Override
     public SendMessage executeNextStage(Integer stageId) throws CommandExecutionException {
-        cache.addCommandToCache(UserInfoHolder.getUsername().get(), this, stageId+1);
+        cache.addCommandToCache(UserInfoHolder.getUsername().get(), this, stageId + 1);
         switch (stageId) {
             case 0:
                 return getFirstMessage();
             case 1:
                 return getAnswer();
-            default: throw new CommandExecutionException("Шаг не найден");
+            default:
+                throw new CommandExecutionException("Шаг не найден");
         }
     }
 
@@ -68,6 +66,7 @@ public class ClubCommand implements Command {
         } else {
             sendMessage.setText("Молодец, мой друг! Ты прошел проверку. Всегда помни правило Бобиковского клуба!");
         }
+        sendMessage.setReplyMarkup(CommandsUtil.getDefaultRows());
         return sendMessage;
     }
 
