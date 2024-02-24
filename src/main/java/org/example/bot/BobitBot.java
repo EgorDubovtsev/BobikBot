@@ -15,8 +15,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
 import javax.annotation.PostConstruct;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -58,10 +61,12 @@ public class BobitBot extends TelegramLongPollingBot {
             System.out.println(Thread.currentThread().getId());
 
             String username = update.getMessage().getFrom().getUserName();
+            String name = Optional.of(update.getMessage().getFrom().getFirstName())
+                    .orElse("anonim "+ ThreadLocalRandom.current());
             String message = update.getMessage().getText();
             Long chatId = update.getMessage().getChatId();
             cache.addChatToCache(username, chatId);
-            UserInfoHolder.setUsername(username);
+            UserInfoHolder.setUsername(Objects.isNull(username) ? name : username);
             UserInfoHolder.setChatId(String.valueOf(chatId));
             UserInfoHolder.setMessage(message);
 
